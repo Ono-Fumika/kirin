@@ -13,6 +13,7 @@ public class Player : MonoBehaviour
     [SerializeField] GameObject neck;
 
     [SerializeField] CountdownManager countdownManager;
+    [SerializeField] private SliderManager sliderManager;
 
     GameObject currentNeck; // 現在のneckオブジェクトを保持
     List<GameObject> allNecks = new List<GameObject>(); // 生成された全てのneckを追跡
@@ -218,6 +219,7 @@ public class Player : MonoBehaviour
             collision.gameObject.SetActive(false); // 草を非アクティブにして見た目と当たり判定を消す
             hiddenGrassObjects.Add(collision.gameObject); // 草をリストに追加
             countdownManager.AddSeconds(3); // カウントを3秒追加
+            sliderManager.IncreaseSlider(1); // スライダーの値を1増加
 
         }
     }

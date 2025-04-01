@@ -48,6 +48,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   neck: {fileID: 6509107498080303351, guid: 21706cd784305824d801d9b08f543d0e, type: 3}
   countdownManager: {fileID: 0}
+  sliderManager: {fileID: -4570348606483358195, guid: cf2419c5e5ae4a146be4f3e95758e2fd, type: 3}
 --- !u!54 &7234938196533763124
 Rigidbody:
   m_ObjectHideFlags: 0
