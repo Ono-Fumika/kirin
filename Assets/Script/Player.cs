@@ -10,8 +10,9 @@ public class Player : MonoBehaviour
     Vector2 previousDirection; // 前回の方向を保存
 
     // 生成するオブジェクト
-    [SerializeField]
-    GameObject neck;
+    [SerializeField] GameObject neck;
+
+    [SerializeField] CountdownManager countdownManager;
 
     GameObject currentNeck; // 現在のneckオブジェクトを保持
     List<GameObject> allNecks = new List<GameObject>(); // 生成された全てのneckを追跡
@@ -32,10 +33,10 @@ public class Player : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            StartCoroutine(RewindMovement()); // スペースキーを押すと逆再生を開始
-        }
+        //if (Input.GetKeyDown(KeyCode.Space))
+        //{
+        //    StartCoroutine(RewindMovement()); // スペースキーを押すと逆再生を開始
+        //}
 
         if (!isRewinding) // 逆再生中でなければ通常の移動
         {
@@ -133,6 +134,14 @@ public class Player : MonoBehaviour
         );
     }
 
+    public void StartRewind()
+    {
+        if (!isRewinding)
+        {
+            StartCoroutine(RewindMovement());
+        }
+    }
+
     IEnumerator RewindMovement()
     {
         isRewinding = true; // 逆再生を開始
@@ -192,6 +201,7 @@ public class Player : MonoBehaviour
 
         isRewinding = false; // 逆再生終了
 
+        countdownManager.ResetCountdown(); // 逆再生完了後にカウントをリセット
         // 動き直した際に新しいneckを生成
         SpawnNeck();
     }
