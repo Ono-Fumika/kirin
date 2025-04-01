@@ -10,7 +10,7 @@ public class CountdownManager : MonoBehaviour
     [SerializeField] TMP_Text countdownText; // カウントダウン表示用のText
     [SerializeField] Player player;     // Playerスクリプトへの参照
 
-    float countdown = 10f; // 初期カウントダウン秒数
+    float countdown = 5f; // 初期カウントダウン秒数
     float initialCountdown; // カウントの初期値を保存
 
     void Start()
@@ -44,7 +44,7 @@ public class CountdownManager : MonoBehaviour
     public void AddSeconds(float seconds)
     {
         countdown += seconds; // 秒数を加算
-        countdown = Mathf.Min(countdown, 10); // 最大値を10に制限
+        countdown = Mathf.Min(countdown, 5); // 最大値を10に制限
         UpdateCountdownUI();
 
     }

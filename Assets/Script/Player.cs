@@ -19,6 +19,9 @@ public class Player : MonoBehaviour
     List<Vector3> positionHistory = new List<Vector3>(); // プレイヤーの位置履歴
     List<float> rotationHistory = new List<float>();    // プレイヤーの回転履歴
 
+    List<GameObject> hiddenGrassObjects = new List<GameObject>(); // 消えた草のリストを追跡
+
+
     bool isRewinding = false; // 逆再生中かどうかのフラグ
 
     void Start()
@@ -201,6 +204,8 @@ public class Player : MonoBehaviour
 
         isRewinding = false; // 逆再生終了
 
+        RestoreGrass(); // 草を復活させる
+
         countdownManager.ResetCountdown(); // 逆再生完了後にカウントをリセット
         // 動き直した際に新しいneckを生成
         SpawnNeck();
@@ -210,10 +215,24 @@ public class Player : MonoBehaviour
     {
         if (collision.collider.CompareTag("Grass")) // Grassタグを持つオブジェクトに衝突
         {
-            Destroy(collision.gameObject); // Grassオブジェクトを消す
+            collision.gameObject.SetActive(false); // 草を非アクティブにして見た目と当たり判定を消す
+            hiddenGrassObjects.Add(collision.gameObject); // 草をリストに追加
             countdownManager.AddSeconds(3); // カウントを3秒追加
+
         }
     }
+
+    void RestoreGrass()
+    {
+        // 非アクティブだった草を復活させる
+        foreach (GameObject grass in hiddenGrassObjects)
+        {
+            grass.SetActive(true);
+        }
+
+        hiddenGrassObjects.Clear(); // リストをクリア
+    }
+
 
 }
 
