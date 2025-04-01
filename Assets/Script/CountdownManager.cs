@@ -41,6 +41,14 @@ public class CountdownManager : MonoBehaviour
         countdown = initialCountdown; // カウントを初期値にリセット
         UpdateCountdownUI(); // 表示を更新
     }
+    public void AddSeconds(float seconds)
+    {
+        countdown += seconds; // 秒数を加算
+        countdown = Mathf.Min(countdown, 10); // 最大値を10に制限
+        UpdateCountdownUI();
+
+    }
+
 
     void UpdateCountdownUI()
     {

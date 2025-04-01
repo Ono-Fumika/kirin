@@ -205,5 +205,15 @@ public class Player : MonoBehaviour
         // 動き直した際に新しいneckを生成
         SpawnNeck();
     }
+
+    void OnCollisionEnter(Collision collision)
+    {
+        if (collision.collider.CompareTag("Grass")) // Grassタグを持つオブジェクトに衝突
+        {
+            Destroy(collision.gameObject); // Grassオブジェクトを消す
+            countdownManager.AddSeconds(3); // カウントを3秒追加
+        }
+    }
+
 }
 
