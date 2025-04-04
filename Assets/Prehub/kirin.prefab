@@ -47,7 +47,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   neck: {fileID: 6509107498080303351, guid: 21706cd784305824d801d9b08f543d0e, type: 3}
+  grass: {fileID: 3685307235032873245, guid: 2d52089a7d6426d4c924fb04c6336349, type: 3}
   countdownManager: {fileID: 0}
+  grassManager: {fileID: -3852863883266619380, guid: 2d52089a7d6426d4c924fb04c6336349, type: 3}
   sliderManager: {fileID: -4570348606483358195, guid: cf2419c5e5ae4a146be4f3e95758e2fd, type: 3}
 --- !u!54 &7234938196533763124
 Rigidbody:

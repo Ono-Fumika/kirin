@@ -11,9 +11,11 @@ public class Player : MonoBehaviour
 
     // 生成するオブジェクト
     [SerializeField] GameObject neck;
+    [SerializeField] GameObject grass;
 
     [SerializeField] CountdownManager countdownManager;
-    [SerializeField] private SliderManager sliderManager;
+    [SerializeField] GrassManager grassManager;
+    [SerializeField] SliderManager sliderManager;
 
     GameObject currentNeck; // 現在のneckオブジェクトを保持
     List<GameObject> allNecks = new List<GameObject>(); // 生成された全てのneckを追跡
@@ -24,6 +26,7 @@ public class Player : MonoBehaviour
 
 
     bool isRewinding = false; // 逆再生中かどうかのフラグ
+    bool isMove = false;
 
     void Start()
     {
@@ -42,7 +45,7 @@ public class Player : MonoBehaviour
         //    StartCoroutine(RewindMovement()); // スペースキーを押すと逆再生を開始
         //}
 
-        if (!isRewinding) // 逆再生中でなければ通常の移動
+        if (!isRewinding && !isMove) // 逆再生中でなければ通常の移動
         {
             Move();
         }
@@ -149,6 +152,7 @@ public class Player : MonoBehaviour
     IEnumerator RewindMovement()
     {
         isRewinding = true; // 逆再生を開始
+        grassManager.DeactivateAllGrassColliders(); // GrassのBoxColliderを無効化
 
         float rewindSpeed = 3.0f; // neckとプレイヤーの戻る速度
         int rewindIndex = positionHistory.Count - 1; // 位置履歴の最後のインデックス
@@ -203,13 +207,14 @@ public class Player : MonoBehaviour
         positionHistory.Add(transform.position); // 現在の位置を履歴に記録
         rotationHistory.Add(transform.rotation.eulerAngles.z); // 現在の回転を記録
 
+        grassManager.ActivateAllGrassColliders(); // GrassのBoxColliderを有効化
+
         isRewinding = false; // 逆再生終了
 
-        RestoreGrass(); // 草を復活させる
 
+        RestoreGrass(); // 草を復活させる
         countdownManager.ResetCountdown(); // 逆再生完了後にカウントをリセット
-        // 動き直した際に新しいneckを生成
-        SpawnNeck();
+        SpawnNeck(); // 動き直した際に新しいneckを生成
     }
 
     void OnCollisionEnter(Collision collision)
@@ -220,7 +225,38 @@ public class Player : MonoBehaviour
             hiddenGrassObjects.Add(collision.gameObject); // 草をリストに追加
             countdownManager.AddSeconds(3); // カウントを3秒追加
             sliderManager.IncreaseSlider(1); // スライダーの値を1増加
+        }
 
+        if (collision.collider.CompareTag("Neck"))
+        {
+            isMove = false;
+        }
+    }
+
+    void OnCollisionExit(Collision collision)
+    {
+        // 逆再生中のみ処理を実行
+        if (isRewinding && collision.collider.CompareTag("clog"))
+        {
+            // clogの位置を保存
+            Vector3 clogPosition = collision.transform.position;
+
+            // Grassオブジェクトを生成
+            GameObject newGrass = Instantiate(grass, clogPosition, Quaternion.identity);
+            
+            // BoxColliderを非アクティブ化
+            if (newGrass.TryGetComponent<BoxCollider>(out BoxCollider collider))
+            {
+                collider.enabled = false;
+            }
+
+            // GrassManagerに登録
+            if (grassManager != null)
+            {
+                grassManager.RegisterGrass(newGrass);
+            }
+            // clogオブジェクトを削除
+            Destroy(collision.gameObject);
         }
     }
 
@@ -237,4 +273,3 @@ public class Player : MonoBehaviour
 
 
 }
-

@@ -48,9 +48,7 @@ public class SliderManager : MonoBehaviour
     private void GenerateClog()
     {
         // プレイヤーの下辺にclogオブジェクトを生成
-        Vector3 clogPosition = player.position + new Vector3(0, -0.5f, 0); // プレイヤーの下辺を基準に位置を設定
+        Vector3 clogPosition = player.position + new Vector3(0, -1f, 0); // プレイヤーの下辺を基準に位置を設定
         Instantiate(clogPrefab, clogPosition, Quaternion.identity); // clogオブジェクト生成
     }
-
-
 }

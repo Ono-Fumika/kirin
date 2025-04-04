@@ -15,10 +15,8 @@ public class CameraFollow : MonoBehaviour
 
         // yÀ•W‚ª1ˆÈ‰º‚É‚È‚ç‚È‚¢‚æ‚¤§ŒÀ
         desiredPosition.y = Mathf.Max(desiredPosition.y, 1);
-
+        
         Vector3 smoothedPosition = Vector3.Lerp(transform.position, desiredPosition, smoothSpeed); // ŠŠ‚ç‚©‚ÉˆÚ“®
         transform.position = smoothedPosition;
-
     }
-
 }
