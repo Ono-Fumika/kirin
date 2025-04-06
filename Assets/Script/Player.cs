@@ -59,6 +59,7 @@ public class Player : MonoBehaviour
         //}
 
         UpdateDistanceText(); // テキストとの距離を計る
+        UpdateTextPosition();
 
         if (isClear && Input.GetKeyDown(KeyCode.Space)) // スペースキーでシーンリロード
         {
@@ -304,7 +305,7 @@ public class Player : MonoBehaviour
     void UpdateDistanceText()
     {
         // プレイヤーの上辺位置を計算
-        Vector3 playerTopPosition = new Vector3(transform.position.x, transform.position.y + GetComponent<Renderer>().bounds.extents.y, transform.position.z);
+        Vector3 playerTopPosition = new Vector3(transform.position.x, transform.position.y +2.1f, transform.position.z);
 
         // チェックポイントとの距離を計算
         distance = Vector3.Distance(playerTopPosition, checkPoint.transform.position);
@@ -312,5 +313,19 @@ public class Player : MonoBehaviour
         // 距離をテキストに反映（小数第1位まで表示）
         distanceText.text = $"{Mathf.RoundToInt(distance)} m";
     }
+    void UpdateTextPosition()
+    {
+        // プレイヤーの頭上の位置を計算
+        Vector3 playerTopPosition = new Vector3(
+            transform.position.x + 0.5f,
+            transform.position.y + 2.5f, // プレイヤーの高さ + オフセット
+            transform.position.z
+        );
+
+        // テキストの位置をプレイヤーの頭上に移動
+        distanceText.transform.position = playerTopPosition;
+        distanceText.transform.rotation = Quaternion.identity; // テキストを回転させない
+    }
+
 
 }
