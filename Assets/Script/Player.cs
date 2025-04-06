@@ -228,8 +228,12 @@ public class Player : MonoBehaviour
         positionHistory.Add(transform.position); // 現在の位置を履歴に記録
         rotationHistory.Add(transform.rotation.eulerAngles.z); // 現在の回転を記録
 
-        grassManager.ActivateAllGrassColliders(); // GrassのBoxColliderを有効化
+        // 動きのリセット処理
+        direction = Vector2.up; // 進行方向を上方向にリセット
+        previousDirection = direction; // 前回の方向もリセット
+        transform.rotation = Quaternion.Euler(0, 0, 0); // 上方向の回転にリセット
 
+        grassManager.ActivateAllGrassColliders(); // GrassのBoxColliderを有効化
         isRewinding = false; // 逆再生終了
 
 
