@@ -1,10 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using UnityEngine.SceneManagement;
+using TMPro;
 
 public class Player : MonoBehaviour
 {
+
     float moveSpeed = 3.0f;
     Vector2 direction = Vector2.up;
     Vector2 previousDirection; // 前回の方向を保存
@@ -16,6 +20,13 @@ public class Player : MonoBehaviour
     [SerializeField] CountdownManager countdownManager;
     [SerializeField] GrassManager grassManager;
     [SerializeField] SliderManager sliderManager;
+
+    [SerializeField] TMP_Text clearText; // 「クリア」テキストUIをインスペクターで紐づけ
+    bool isClear = false; // クリアフラグ
+
+    [SerializeField] TMP_Text distanceText; // 距離を表示するテキストUI
+    GameObject checkPoint; // チェックポイントオブジェクト
+    float distance; // プレイヤー上辺とチェックポイントの距離
 
     GameObject currentNeck; // 現在のneckオブジェクトを保持
     List<GameObject> allNecks = new List<GameObject>(); // 生成された全てのneckを追跡
@@ -36,6 +47,8 @@ public class Player : MonoBehaviour
 
         // 初期位置にneckを生成
         SpawnNeck();
+        // チェックポイントをシーンから取得
+        checkPoint = GameObject.FindWithTag("CheckPoint");
     }
 
     void Update()
@@ -45,7 +58,14 @@ public class Player : MonoBehaviour
         //    StartCoroutine(RewindMovement()); // スペースキーを押すと逆再生を開始
         //}
 
-        if (!isRewinding && !isMove) // 逆再生中でなければ通常の移動
+        UpdateDistanceText(); // テキストとの距離を計る
+
+        if (isClear && Input.GetKeyDown(KeyCode.Space)) // スペースキーでシーンリロード
+        {
+            Time.timeScale = 1; // 時間を元に戻す
+            SceneManager.LoadScene(SceneManager.GetActiveScene().name); // シーンを再読み込み
+        }
+        else if (!isRewinding && !isMove && !isClear) // クリアしていない場合のみ通常の移動
         {
             Move();
         }
@@ -231,6 +251,10 @@ public class Player : MonoBehaviour
         {
             isMove = false;
         }
+        if (collision.collider.CompareTag("CheckPoint"))
+        {
+            HandleClear(); // クリア処理を呼び出し
+        }
     }
 
     void OnCollisionExit(Collision collision)
@@ -270,6 +294,23 @@ public class Player : MonoBehaviour
 
         hiddenGrassObjects.Clear(); // リストをクリア
     }
+    void HandleClear()
+    {
+        // クリアフラグを立てて動作を停止
+        isClear = true;
+        Time.timeScale = 0; // 動きを停止
+        clearText.gameObject.SetActive(true); // 「クリア」の文字を表示
+    }
+    void UpdateDistanceText()
+    {
+        // プレイヤーの上辺位置を計算
+        Vector3 playerTopPosition = new Vector3(transform.position.x, transform.position.y + GetComponent<Renderer>().bounds.extents.y, transform.position.z);
 
+        // チェックポイントとの距離を計算
+        distance = Vector3.Distance(playerTopPosition, checkPoint.transform.position);
+
+        // 距離をテキストに反映（小数第1位まで表示）
+        distanceText.text = $"{Mathf.RoundToInt(distance)} m";
+    }
 
 }

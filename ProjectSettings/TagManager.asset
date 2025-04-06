@@ -5,6 +5,9 @@ TagManager:
   serializedVersion: 2
   tags:
   - Grass
+  - clog
+  - Neck
+  - CheckPoint
   layers:
   - Default
   - TransparentFX
