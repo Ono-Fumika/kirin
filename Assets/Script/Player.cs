@@ -13,6 +13,14 @@ public class Player : MonoBehaviour
     Vector2 direction = Vector2.up;
     Vector2 previousDirection; // 前回の方向を保存
 
+    // ダッシュ機能用の変数
+    float dashDuration = 1.5f; // ダッシュの持続時間（秒）
+    float dashCooldown = 5.0f; // クールダウン期間（秒）
+    float dashSpeedMultiplier = 2.0f; // スピードの倍率
+    float dashTimer = 0.0f; // ダッシュの残り時間
+    float cooldownTimer = 0.0f; // クールダウンの残り時間
+
+
     // 生成するオブジェクト
     [SerializeField] GameObject neck;
     [SerializeField] GameObject grass;
@@ -99,7 +107,19 @@ public class Player : MonoBehaviour
 
         // 現在の方向にオブジェクトを移動
         Vector3 movement = new Vector3(direction.x, direction.y, 0); // Z方向を固定
+                                                                     // ダッシュのタイマーが動作中かどうか
+        if (dashTimer > 0)
+        {
+            movement *= dashSpeedMultiplier; // スピードを倍増
+            dashTimer -= Time.deltaTime; // ダッシュの残り時間を減らす
+        }
+        else if (cooldownTimer > 0)
+        {
+            cooldownTimer -= Time.deltaTime; // クールダウンの残り時間を減らす
+        }
+
         transform.position += movement * moveSpeed * Time.deltaTime;
+
 
         // プレイヤーの位置と回転を記録
         if (positionHistory.Count == 0 || transform.position != positionHistory[positionHistory.Count - 1])
@@ -127,6 +147,14 @@ public class Player : MonoBehaviour
         {
             StretchNeck();
         }
+
+        // Qキーでダッシュを開始
+        if (Input.GetKeyDown(KeyCode.Q) && dashTimer <= 0 && cooldownTimer <= 0 && !isRewinding)
+        {
+            dashTimer = dashDuration; // ダッシュ開始
+            cooldownTimer = dashCooldown; // クールダウン開始
+        }
+
     }
 
     void SpawnNeck()
